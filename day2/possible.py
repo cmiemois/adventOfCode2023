@@ -8,8 +8,6 @@ answer = 0
 data = open('input.txt', 'r', -1, 'UTF-8').read()
 lines = data.replace('Game ', '').split('\n')
 
-#If not performed, the last index will just be an empty string which causes issues
-lines.pop()
 
 def determine(line: str) -> int:
     """Returns as 0 if the line was not possible, else the line number as an integer"""
@@ -17,49 +15,45 @@ def determine(line: str) -> int:
     number_draws = line.split(':')
     #boolean to track if the game ever failed
     failed = False
-    print(str(number_draws))
-    answer = int(number_draws[0])
+    number = int(number_draws[0])
     draws = number_draws[1]
 
     #Each hand
     for draw in draws.split('; '):
-
         #Each color separately
         colors = draw.split(', ')
         for color in colors:
+            color = color.strip()
             #0 is amount, 1 is color
             halves = color.split(' ')
-            print('halves[0]: '+str(halves[1]))
             amount = int(halves[0])
             color_string = halves[1]
+
             match color_string:
                 case 'red':
                     if amount>RMAX:
-                        print('red maxed out, line is ' +str(answer))
-                        answer=0
                         failed = True
                         break
                 case 'green':
                     if amount>GMAX:
-                        answer=0
                         failed = True
                         break
                 case 'blue':
                     if amount>BMAX:
-                        answer=0
                         failed = True
                         break
         if failed:
             break
 
-    if answer!=0:
-        print('Line ' + str(answer) + ' was POSSIBLE')
+    if not failed:
+        print('Line ' + str(number_draws[0]) + ' was POSSIBLE')
+        return 0
     else:
-        print('Line '+str(answer)+' was NOT POSSIBLE')
-
-    return answer
+        print('Line ' + str(number) + ' was NOT POSSIBLE')
+        return number
 
 answer = sum(determine(x) for x in lines)
 
 
+#2457 is too low, sum of all line is 5000
 print('The sum of all possible games is: '+str(answer))
