@@ -13,8 +13,8 @@ def determine(line: str) -> int:
     """Returns as 0 if the line was not possible, else the line number as an integer"""
     #split the line into a line number and the line info
     number_draws = line.split(':')
-    #boolean to track if the game ever failed
-    failed = False
+    #boolean to track if the game ever possible
+    possible = True
     number = int(number_draws[0])
     draws = number_draws[1]
 
@@ -32,28 +32,29 @@ def determine(line: str) -> int:
             match color_string:
                 case 'red':
                     if amount>RMAX:
-                        failed = True
+                        possible = False
                         break
                 case 'green':
                     if amount>GMAX:
-                        failed = True
+                        possible = False
                         break
                 case 'blue':
                     if amount>BMAX:
-                        failed = True
+                        possible = False
                         break
-        if failed:
+        if not possible:
             break
 
-    if not failed:
+    if possible:
         print('Line ' + str(number_draws[0]) + ' was POSSIBLE')
-        return 0
+        return number
     else:
         print('Line ' + str(number) + ' was NOT POSSIBLE')
-        return number
+        return 0
 
-answer = sum(determine(x) for x in lines)
+for line in lines:
+    answer += determine(line)
 
 
-#2457 is too low, sum of all line is 5000
+#2457 is too low, sum of all lines is 5000
 print('The sum of all possible games is: '+str(answer))
